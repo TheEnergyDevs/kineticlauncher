@@ -7,26 +7,27 @@
     android:focusable="true"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="3dp"
-    android:paddingBottom="3dp">
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <ImageView
         android:id="@+id/app_icon_iv"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="5dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_margin="4dp"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
-        android:shadowColor="#D8000000"
-        android:shadowRadius="2"
-        android:gravity="center_horizontal"
         android:id="@+id/app_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:shadowColor="#D8000000"
+        android:shadowRadius="2"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 
 </LinearLayout>
-

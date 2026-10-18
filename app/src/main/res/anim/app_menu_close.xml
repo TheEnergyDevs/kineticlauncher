@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:interpolator/accelerate_cubic">
+    <alpha
+        android:duration="180"
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0" />
+    <scale
+        android:duration="180"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="100%"
+        android:toXScale="0.9"
+        android:toYScale="0.9" />
+    <translate
+        android:duration="180"
+        android:fromYDelta="0dp"
+        android:toYDelta="20dp" />
+</set>

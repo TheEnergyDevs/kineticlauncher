@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.Material3.Light">
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -35,6 +37,8 @@
     </style>
 
     <style name="AppTheme.Dock" parent="Theme.Material3.Dark">
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="colorAccent">#FFFFFF</item>
         <item name="colorPrimary">@color/action</item>
         <item name="colorSecondaryContainer">#FFFFFF</item>

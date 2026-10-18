@@ -1037,6 +1037,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         windowManager.addView(appMenu, layoutParams)
         appMenuVisible = true
+        val anim = AnimationUtils.loadAnimation(context, R.anim.app_menu_open)
+        appMenu!!.startAnimation(anim)
     }
 
     fun hideAppMenu() {
@@ -1046,7 +1048,22 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         if (adapter is AppAdapter) {
             adapter.filter("")
         }
-        windowManager.removeView(appMenu)
+        if (appMenuVisible && appMenu != null) {
+            val menuView = appMenu
+            val anim = AnimationUtils.loadAnimation(context, R.anim.app_menu_close)
+            anim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+                override fun onAnimationEnd(p0: Animation?) {
+                    if (menuView != null && menuView.parent != null) {
+                        try {
+                            windowManager.removeView(menuView)
+                        } catch (_: Exception) {}
+                    }
+                }
+                override fun onAnimationRepeat(p0: Animation?) {}
+            })
+            menuView!!.startAnimation(anim)
+        }
         appMenuVisible = false
     }
 
@@ -1679,7 +1696,22 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun hideQuickSettingsPanel() {
-        windowManager.removeView(quickSettingsPanel)
+        if (quickSettingsPanelVisible && quickSettingsPanel != null) {
+            val panelView = quickSettingsPanel
+            val anim = AnimationUtils.loadAnimation(context, R.anim.qs_panel_close)
+            anim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+                override fun onAnimationEnd(p0: Animation?) {
+                    if (panelView != null && panelView.parent != null) {
+                        try {
+                            windowManager.removeView(panelView)
+                        } catch (_: Exception) {}
+                    }
+                }
+                override fun onAnimationRepeat(p0: Animation?) {}
+            })
+            panelView!!.startAnimation(anim)
+        }
         quickSettingsPanelVisible = false
         quickSettingsPanel = null
         notificationsLv = null
@@ -1887,6 +1919,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         ColorUtils.applyMainColor(context, sharedPreferences, quickSettingsPanel!!)
         windowManager.addView(quickSettingsPanel, layoutParams)
         quickSettingsPanelVisible = true
+        val anim = AnimationUtils.loadAnimation(context, R.anim.qs_panel_open)
+        quickSettingsPanel!!.startAnimation(anim)
         updateNotificationArea()
         updateWiFiStatus()
         updateBluetoothStatus()
@@ -1964,10 +1998,27 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             )
         ) View.VISIBLE else View.GONE
         powerMenuVisible = true
+        val anim = AnimationUtils.loadAnimation(context, R.anim.power_menu_open)
+        powerMenu!!.startAnimation(anim)
     }
 
     private fun hidePowerMenu() {
-        windowManager.removeView(powerMenu)
+        if (powerMenuVisible && powerMenu != null) {
+            val menuView = powerMenu
+            val anim = AnimationUtils.loadAnimation(context, R.anim.power_menu_close)
+            anim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) {}
+                override fun onAnimationEnd(p0: Animation?) {
+                    if (menuView != null && menuView.parent != null) {
+                        try {
+                            windowManager.removeView(menuView)
+                        } catch (_: Exception) {}
+                    }
+                }
+                override fun onAnimationRepeat(p0: Animation?) {}
+            })
+            menuView!!.startAnimation(anim)
+        }
         powerMenuVisible = false
         powerMenu = null
     }
