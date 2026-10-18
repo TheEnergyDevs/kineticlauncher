@@ -75,13 +75,6 @@
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_bluetooth_off" />
 
-                <ImageView
-                    android:id="@+id/wifi_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/ic_wifi_on" />
-
                 <TextView
                     android:id="@+id/battery_btn"
                     android:layout_width="wrap_content"
@@ -152,8 +145,9 @@
                 android:layout_height="40dp"
                 android:layout_margin="6dp"
                 android:background="@drawable/circle"
+                android:contentDescription="@string/assistant"
                 android:padding="8dp"
-                android:src="@drawable/ic_assistant" />
+                android:src="@drawable/ic_assistant_star" />
         </LinearLayout>
     </RelativeLayout>
 

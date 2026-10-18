@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- General -->
-    <string name="app_name">ਸਮਾਰਟ ਡੌਕ</string>
+    <string name="app_name">KineticLauncher</string>
     <string name="none">ਕੋਈ ਨਹੀਂ</string>
     <string name="move">ਮੂਵ ਕਰੋ</string>
     <string name="ok">ਠੀਕ ਹੈ</string>
@@ -100,7 +100,6 @@
     <string name="enable_notif_btn">ਸੂਚਨਾਵਾਂ</string>
     <string name="enable_qs_bluetooth_title">ਬਲੂਟੁੱਥ</string>
     <string name="enable_qs_battery_title">ਬੈਟਰੀ</string>
-    <string name="enable_qs_wifi_title">ਵਾਈ-ਫਾਈ</string>
     <string name="enable_qs_vol_title">ਵਾਲੀਅਮ</string>
     <string name="enable_qs_date_title">ਘੜੀ</string>
     <string name="enable_qs_pin_title">ਪਿੰਨ</string>
@@ -134,6 +133,7 @@
     <string name="app_music_title">ਸੰਗੀਤ</string>
     <string name="app_movies_title">ਫਿਲਮਾਂ</string>
     <string name="app_assistant_title">ਸਹਾਇਕ</string>
+    <string name="assistant">ਸਹਾਇਕ</string>
     <string name="app_clock_title">ਕਲੋਕ</string>
     <string name="app_terminal_title">ਰੋਕਨਾ</string>
     <string name="app_rec_title">ਸਕਰੀਨ ਰਿਕਾਰਡਰ</string>
@@ -243,9 +243,9 @@
 
     <!-- Help and about page -->
     <string name="help_and_about">ਮਦਦ ਅਤੇ ਇਸ ਬਾਰੇ</string>
-    <string name="a_launcher_for_android_x86_by_">Axel358 ਦੁਆਰਾ Android x86 ਲਈ ਇੱਕ ਲਾਂਚਰ</string>
+    <string name="a_launcher_for_android_x86_by_">KineticLauncher @shemeshr ਅਤੇ @TheEnergyDevs ਦੁਆਰਾ ਬਣਾਇਆ ਗਿਆ ਹੈ। ਇਹ Axel358 ਦੁਆਰਾ Smart Dock ਦਾ ਇੱਕ ਫੋਰਕ ਹੈ।</string>
     <string name="help">ਮਦਦ</string>
-    <string name="smart_dock_its_free_and_open_">ਸਮਾਰਟ ਡੌਕ ਇਹ ਮੁਫਤ ਅਤੇ ਓਪਨ ਸੋਰਸ ਹੈ। GitHub \'ਤੇ ਯੋਗਦਾਨ ਪਾਓ</string>
+    <string name="smart_dock_its_free_and_open_">KineticLauncher ਇਹ ਮੁਫਤ ਅਤੇ ਓਪਨ ਸੋਰਸ ਹੈ। GitHub \'ਤੇ ਯੋਗਦਾਨ ਪਾਓ</string>
     <string name="github">GitHub</string>
     <string name="show_help_summary">ਮਦਦ ਲਈ ਟੈਪ ਕਰੋ</string>
     <string name="app_help">ਸਹੀ ਅਨੁਮਤੀਆਂ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਸਿਸਟਮ ਐਪ ਦੇ ਤੌਰ \'ਤੇ ਸਥਾਪਿਤ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ।
@@ -258,7 +258,7 @@
     \nਐਪ ਨੂੰ ਅਣਇੰਸਟੌਲ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ \'ਤੇ ਇਸਦੀ ਡਿਵਾਈਸ ਐਡਮਿਨ ਅਨੁਮਤੀ ਨੂੰ ਹਟਾਉਣਾ ਪਵੇਗਾ</string>
     <string name="more_help">ਹੋਰ ਮਦਦ</string>
     <string name="contributors">ਯੋਗਦਾਨ ਪਾਉਣ ਵਾਲੇ</string>
-    <string name="tap_to_see_the_list_of_great_p">ਸਮਾਰਟ ਡੌਕ ਵਿੱਚ ਯੋਗਦਾਨ ਪਾਉਣ ਵਾਲੇ ਮਹਾਨ ਲੋਕਾਂ ਦੀ ਸੂਚੀ ਦੇਖਣ ਲਈ ਟੈਪ ਕਰੋ</string>
+    <string name="tap_to_see_the_list_of_great_p">KineticLauncher ਵਿੱਚ ਯੋਗਦਾਨ ਪਾਉਣ ਵਾਲੇ ਮਹਾਨ ਲੋਕਾਂ ਦੀ ਸੂਚੀ ਦੇਖਣ ਲਈ ਟੈਪ ਕਰੋ</string>
     <string name="accessibility_service_description">ਬੈਕ ਵਰਗੀਆਂ ਕਾਰਵਾਈਆਂ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਦਿੰਦਾ ਹੈ</string>
     <string name="join_telegram_title">ਟੈਲੀਗ੍ਰਾਮ ਸਮੂਹ</string>
     <string name="join_telegram_summary">ਕੋਈ ਸਵਾਲ ਹਨ? ਟੈਲੀਗ੍ਰਾਮ ਸਹਾਇਤਾ ਸਮੂਹ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ</string>
@@ -296,8 +296,8 @@
     <string name="display_settings">ਡਿਸਪਲੇ ਸੈਟਿੰਗਜ਼</string>
 
     <!-- Toasts -->
-    <string name="start_message">ਸਮਾਰਟ ਡੌਕ ਸ਼ੁਰੂ ਹੋਇਆ</string>
-    <string name="enable_access_help">ਸਮਾਰਟ ਡੌਕ ਸੇਵਾ ਲੱਭੋ ਅਤੇ ਚਾਲੂ ਕਰੋ</string>
+    <string name="start_message">KineticLauncher ਸ਼ੁਰੂ ਹੋਇਆ</string>
+    <string name="enable_access_help">KineticLauncher ਸੇਵਾ ਲੱਭੋ ਅਤੇ ਚਾਲੂ ਕਰੋ</string>
 
     <!-- Crash dialog -->
     <string name="something_wrong">ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ</string>
@@ -320,13 +320,13 @@
     <string name="dock_background_opacity">ਬੈਕਗ੍ਰਾਊਂਡ ਧੁੰਦਲਾਪਨ</string>
     <string name="override_dock_background_opacity">ਬੈਕਗ੍ਰਾਊਂਡ ਧੁੰਦਲਾਪਨ ਓਵਰਰਾਈਡ ਕਰੋ</string>
     <string name="dock_hidden">ਡੌਕ ਲੁਕਿਆ ਹੋਇਆ</string>
-    <string name="dock_hidden_message_handle">ਸਮਾਰਟ ਡੌਕ ਨੂੰ ਲੁਕਾ ਦਿੱਤਾ ਗਿਆ ਹੈ, ਤੁਸੀਂ ਹੈਂਡਲ ਤੇ ਟੈਪ ਕਰਕੇ ਇਸਨੂੰ ਦੁਬਾਰਾ ਐਕਟਿਵ ਕਰ ਸਕਦੇ ਹੋ।</string>
+    <string name="dock_hidden_message_handle">KineticLauncher ਨੂੰ ਲੁਕਾ ਦਿੱਤਾ ਗਿਆ ਹੈ, ਤੁਸੀਂ ਹੈਂਡਲ ਤੇ ਟੈਪ ਕਰਕੇ ਇਸਨੂੰ ਦੁਬਾਰਾ ਐਕਟਿਵ ਕਰ ਸਕਦੇ ਹੋ।</string>
     <string name="close">ਬੰਦ ਕਰੋ</string>
     <string name="hide_notifications">ਨੋਟੀਫੀਕੇਸਨ ਲੁਕਾਓ</string>
     <string name="hide_notification_panel">ਕੀ ਇਸ ਐਪ ਲਈ ਪੈਨਲ ਤੋਂ ਨੋਟੀਫੀਕੇਸਨਾ ਲੁਕਾਉਣੀਆਂ ਹਨ? ਤੁਸੀਂ ਸੂਚਨਾ ਪੈਨਲ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਲੁਕੀਆਂ ਹੋਈਆਂ ਨੋਟੀਫੀਕੇਸਨਾ ਨੂੰ ਕੌਂਫਿਗਰ ਕਰ ਸਕਦੇ ਹੋ</string>
-    <string name="dock_hidden_message_swipe">ਸਮਾਰਟ ਡੌਕ ਨੂੰ ਲੁਕਾ ਦਿੱਤਾ ਗਿਆ ਹੈ, ਤੁਸੀਂ ਇਸਨੂੰ ਇਸ ਤਰ੍ਹਾਂ ਦੁਬਾਰਾ ਐਕਟਿਵ ਕਰ ਸਕਦੇ ਹੋ:\n- ਸਕ੍ਰੀਨ (ਫੋਨ) ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਕੇ\n- ਸਕ੍ਰੀਨ (ਡੈਸਕਟਾਪ) ਦੇ ਹੇਠਾਂ ਮਾਊਸ ਪੁਆਇੰਟਰ ਨੂੰ ਘੁੰਮਾ ਕੇ</string>
+    <string name="dock_hidden_message_swipe">KineticLauncher ਨੂੰ ਲੁਕਾ ਦਿੱਤਾ ਗਿਆ ਹੈ, ਤੁਸੀਂ ਇਸਨੂੰ ਇਸ ਤਰ੍ਹਾਂ ਦੁਬਾਰਾ ਐਕਟਿਵ ਕਰ ਸਕਦੇ ਹੋ:\n- ਸਕ੍ਰੀਨ (ਫੋਨ) ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਕੇ\n- ਸਕ੍ਰੀਨ (ਡੈਸਕਟਾਪ) ਦੇ ਹੇਠਾਂ ਮਾਊਸ ਪੁਆਇੰਟਰ ਨੂੰ ਘੁੰਮਾ ਕੇ</string>
     <string name="shizuku_permission">Shizuku ਪਹੁੰਚ</string>
-    <string name="shizuku_permission_desc">Shizuku ਸਮਾਰਟ ਡੌਕ ਨੂੰ ਕੁਝ ਪ੍ਰਤਿਬੰਧਿਤ ਸਿਸਟਮ ਫੰਕਸ਼ਨਾਂ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ</string>
+    <string name="shizuku_permission_desc">Shizuku KineticLauncher ਨੂੰ ਕੁਝ ਪ੍ਰਤਿਬੰਧਿਤ ਸਿਸਟਮ ਫੰਕਸ਼ਨਾਂ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ</string>
     <string name="shizuku_is_not_running">Shizuku ਚੱਲ ਨਹੀਂ ਰਿਹਾ ਹੈ</string>
     <string name="resize">ਮੁੜ ਆਕਾਰ ਦਿਓ…</string>
     <string name="snap">ਸਨੈਪ…</string>

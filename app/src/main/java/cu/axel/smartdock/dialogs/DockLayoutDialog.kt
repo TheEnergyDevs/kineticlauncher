@@ -15,7 +15,6 @@ class DockLayoutDialog(context: Context, asOverlay: Boolean = false) {
             editor.putBoolean("enable_nav_back", which != 0)
             editor.putBoolean("enable_nav_home", which != 0)
             editor.putBoolean("enable_nav_recents", which != 0)
-            editor.putBoolean("enable_qs_wifi", which != 0)
             editor.putBoolean("enable_qs_vol", which != 0)
             editor.putBoolean("enable_qs_date", which != 0)
             //editor.putBoolean("enable_qs_notif", which != 0)

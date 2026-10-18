@@ -22,6 +22,7 @@
             android:id="@+id/avatar_iv"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:visibility="gone"
             android:src="@drawable/ic_user" />
 
         <TextView
@@ -32,6 +33,7 @@
             android:layout_marginRight="10dp"
             android:maxEms="10"
             android:singleLine="true"
+            android:visibility="gone"
             android:text="@string/user"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#FFFFFFFF" />

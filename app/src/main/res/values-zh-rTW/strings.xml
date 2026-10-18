@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">Smart Dock</string>
+    <string name="app_name">KineticLauncher</string>
     <string name="none">無</string>
     <string name="move">移動</string>
     <string name="ok">確定</string>
@@ -100,7 +100,6 @@
     <string name="enable_notif_btn">通知</string>
     <string name="enable_qs_bluetooth_title">藍牙</string>
     <string name="enable_qs_battery_title">電池</string>
-    <string name="enable_qs_wifi_title">Wi-Fi</string>
     <string name="enable_qs_vol_title">音量</string>
     <string name="enable_qs_date_title">時鐘</string>
     <string name="enable_qs_pin_title">釘選</string>
@@ -134,6 +133,7 @@
     <string name="app_music_title">音樂</string>
     <string name="app_movies_title">影片</string>
     <string name="app_assistant_title">助理</string>
+    <string name="assistant">助理</string>
     <string name="app_clock_title">時鐘</string>
     <string name="app_terminal_title">終端機</string>
     <string name="app_rec_title">螢幕錄影</string>
@@ -242,9 +242,9 @@
 
     <!-- Help and about page -->
     <string name="help_and_about">說明與關於</string>
-    <string name="a_launcher_for_android_x86_by_">一個由 Axel358 開發的 Android x86 啟動器</string>
+    <string name="a_launcher_for_android_x86_by_">KineticLauncher 由 @shemeshr 和 @TheEnergyDevs 開發。它是 Axel358 開發的 Smart Dock 的衍生版本。</string>
     <string name="help">說明</string>
-    <string name="smart_dock_its_free_and_open_">Smart Dock 是免費且開源的。在 GitHub 上貢獻</string>
+    <string name="smart_dock_its_free_and_open_">KineticLauncher 是免費且開源的。在 GitHub 上貢獻</string>
     <string name="github">GitHub</string>
     <string name="show_help_summary">點擊獲取幫助</string>
     <string name="app_help">    應用程式必須安裝為系統應用程式以獲取正確的權限。
@@ -257,7 +257,7 @@
     \n要卸載應用程式，您必須在系統設定中移除裝置管理員權限</string>
     <string name="more_help">更多幫助</string>
     <string name="contributors">貢獻者</string>
-    <string name="tap_to_see_the_list_of_great_p">點擊查看對 Smart Dock 有貢獻的偉大人物列表</string>
+    <string name="tap_to_see_the_list_of_great_p">點擊查看對 KineticLauncher 有貢獻的偉大人物列表</string>
     <string name="accessibility_service_description">允許執行返回等操作</string>
     <string name="join_telegram_title">Telegram 群組</string>
     <string name="join_telegram_summary">有問題嗎？加入 Telegram 支援群組</string>
@@ -295,8 +295,8 @@
     <string name="display_settings">顯示設定</string>
 
     <!-- Toasts -->
-    <string name="start_message">Smart Dock 已啟動</string>
-    <string name="enable_access_help">請找到並啟用 Smart Dock 服務</string>
+    <string name="start_message">KineticLauncher 已啟動</string>
+    <string name="enable_access_help">請找到並啟用 KineticLauncher 服務</string>
 
     <!-- Crash dialog -->
     <string name="something_wrong">發生錯誤</string>
@@ -319,13 +319,13 @@
     <string name="dock_background_opacity">Dock background transparency</string>
     <string name="override_dock_background_opacity">Override background transparency</string>
     <string name="dock_hidden">Dock hidden</string>
-    <string name="dock_hidden_message_handle">Smart Dock has been hidden, you can activate it again by tapping on the handle</string>
+    <string name="dock_hidden_message_handle">KineticLauncher has been hidden, you can activate it again by tapping on the handle</string>
     <string name="close">Close</string>
     <string name="hide_notifications">Hide notifications</string>
     <string name="hide_notification_panel">Hide notifications for this app from the panel? You can configure hidden notifications in Notification panel settings</string>
-    <string name="dock_hidden_message_swipe">Smart Dock has been hidden, you can activate it again by:\n- Swiping up from the bottom of the screen (phone)\n- Hovering the mouse pointer near the bottom of the screen (desktop)</string>
+    <string name="dock_hidden_message_swipe">KineticLauncher has been hidden, you can activate it again by:\n- Swiping up from the bottom of the screen (phone)\n- Hovering the mouse pointer near the bottom of the screen (desktop)</string>
     <string name="shizuku_permission">Shizuku access</string>
-    <string name="shizuku_permission_desc">Allows Smart Dock to access some restricted system functions thrugh Shizuku</string>
+    <string name="shizuku_permission_desc">Allows KineticLauncher to access some restricted system functions thrugh Shizuku</string>
     <string name="shizuku_is_not_running">Shizuku is not running</string>
     <string name="resize">Resize...</string>
     <string name="snap">Snap...</string>
