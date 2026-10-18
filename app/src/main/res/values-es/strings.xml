@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">Smart Dock</string>
+    <string name="app_name">KineticLauncher</string>
     <string name="none">Ninguno</string>
     <string name="move">Mover</string>
     <string name="ok">OK</string>
@@ -102,7 +102,6 @@
     <string name="enable_notif_btn">Notificaciones</string>
     <string name="enable_qs_bluetooth_title">Bluetooth</string>
     <string name="enable_qs_battery_title">Batería</string>
-    <string name="enable_qs_wifi_title">Wi-Fi</string>
     <string name="enable_qs_vol_title">Volumen</string>
     <string name="enable_qs_date_title">Reloj</string>
     <string name="enable_qs_pin_title">Pin</string>
@@ -138,6 +137,7 @@
     <string name="app_music_title">Música</string>
     <string name="app_movies_title">Películas</string>
     <string name="app_assistant_title">Asistente</string>
+    <string name="assistant">Asistente</string>
     <string name="app_clock_title">Reloj</string>
     <string name="app_terminal_title">Terminal</string>
     <string name="app_rec_title">Grabador de pantalla</string>
@@ -248,9 +248,9 @@
 
     <!-- Help and about page -->
     <string name="help_and_about">Ayuda y acerca de</string>
-    <string name="a_launcher_for_android_x86_by_">Un lanzador para Android x86 por Axel358</string>
+    <string name="a_launcher_for_android_x86_by_">KineticLauncher es creado por @shemeshr y @TheEnergyDevs. Es un fork de Smart Dock por Axel358.</string>
     <string name="help">Ayuda</string>
-    <string name="smart_dock_its_free_and_open_">Smart Dock es gratuito y de código abierto. Contribuir en GitHub</string>
+    <string name="smart_dock_its_free_and_open_">KineticLauncher es gratuito y de código abierto. Contribuir en GitHub</string>
     <string name="github">GitHub</string>
     <string name="show_help_summary">Toca para obtener ayuda</string>
     <string name="app_help">    La aplicación debe instalarse como una aplicación del sistema para obtener los permisos correctos.
@@ -263,7 +263,7 @@
     \nPara desinstalar la aplicación, debe eliminar el permiso de administrador del dispositivo en la configuración del sistema</string>
     <string name="more_help">Más ayuda</string>
     <string name="contributors">Colaboradores</string>
-    <string name="tap_to_see_the_list_of_great_p">Toque para ver la lista de grandes personas que han contribuido a Smart Dock</string>
+    <string name="tap_to_see_the_list_of_great_p">Toque para ver la lista de grandes personas que han contribuido a KineticLauncher</string>
     <string name="accessibility_service_description">Permite realizar acciones como Atrás</string>
     <string name="join_telegram_title">grupo de telegramas</string>
     <string name="join_telegram_summary">¿Tienes alguna pregunta? Únete al grupo de soporte de Telegram</string>
@@ -301,8 +301,8 @@
     <string name="display_settings">Configuración de pantalla</string>
 
     <!-- Toasts -->
-    <string name="start_message">Smart Dock iniciado</string>
-    <string name="enable_access_help">Encuentre y habilite el servicio Smart Dock</string>
+    <string name="start_message">KineticLauncher iniciado</string>
+    <string name="enable_access_help">Encuentre y habilite el servicio KineticLauncher</string>
 
     <!-- Crash dialog -->
     <string name="something_wrong">Algo salió mal</string>
@@ -317,13 +317,13 @@
     <string name="dock_background_opacity">Opacidad del fondo</string>
     <string name="override_dock_background_opacity">Opacidad del fondo perzonalizada</string>
     <string name="dock_hidden">Dock oculto</string>
-    <string name="dock_hidden_message_handle">Smart Dock está oculto, puede mostarlo de nuevo tocando en el botón</string>
+    <string name="dock_hidden_message_handle">KineticLauncher está oculto, puede mostarlo de nuevo tocando en el botón</string>
     <string name="close">Cerrar</string>
     <string name="hide_notifications">Ocultar notificaciones</string>
     <string name="hide_notification_panel">Ocultar notificaciones para esta app en el panel? Puede configuar las notificaiones ocultas en los ajustes del Panel de Notificaciones</string>
-    <string name="dock_hidden_message_swipe">Smart Dock está oculto, puede mostarlo de nuevo vía:\n- Deslizando desde la parte inferior de la pantalla (teléfono)\n- Pasando el cursor del ratón cerca de la parte inferior de la pantalla (escritorio)</string>
+    <string name="dock_hidden_message_swipe">KineticLauncher está oculto, puede mostarlo de nuevo vía:\n- Deslizando desde la parte inferior de la pantalla (teléfono)\n- Pasando el cursor del ratón cerca de la parte inferior de la pantalla (escritorio)</string>
     <string name="shizuku_permission">Acceso a Shizuku</string>
-    <string name="shizuku_permission_desc">Permite a Smart Dock accedes a algunas funciones del systema a través de Shizuku</string>
+    <string name="shizuku_permission_desc">Permite a KineticLauncher accedes a algunas funciones del systema a través de Shizuku</string>
     <string name="shizuku_is_not_running">Shizuku no está corriendo</string>
     <string name="resize">Redimensionar…</string>
     <string name="snap">Mover…</string>

@@ -42,6 +42,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.Process
+import android.os.UserManager
 import android.provider.Settings
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -160,7 +161,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private lateinit var assistBtn: ImageView
     private lateinit var powerBtn: ImageView
     private lateinit var bluetoothBtn: ImageView
-    private lateinit var wifiBtn: ImageView
     private lateinit var batteryBtn: TextView
     private lateinit var volumeBtn: ImageView
     private lateinit var pinBtn: ImageView
@@ -614,7 +614,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                         true
                     )
                 )
-                    launchApp(null, sharedPreferences.getString("app_assistant", "")!!)
+                    launchAssistant()
                 else if (event.keyCode == KeyEvent.KEYCODE_R && sharedPreferences.getBoolean(
                         "enable_open_rec",
                         true
@@ -784,6 +784,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         dockHandler.removeCallbacksAndMessages(null)
         updateRunningTasks()
+        updateAssistantButton()
         val anim = AnimationUtils.loadAnimation(context, R.anim.slide_up)
         dockLayout.visibility = View.VISIBLE
         dockLayout.startAnimation(anim)
@@ -1005,6 +1006,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         //Load user info
         val avatarIv = appMenu!!.findViewById<ImageView>(R.id.avatar_iv)
         val userNameTv = appMenu!!.findViewById<TextView>(R.id.user_name_tv)
+        val showUserBtn = isMultiUser()
+        avatarIv.isVisible = showUserBtn
+        userNameTv.isVisible = showUserBtn
 
         if (AppUtils.isSystemApp(context, packageName)) {
             val name = DeviceUtils.getUserName(context)
@@ -1587,9 +1591,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             sharedPreferences.getBoolean("enable_qs_battery$orientationValue", false)
         batteryBtn.isVisible = batteryEnabled
 
-        val wifiEnabled = sharedPreferences.getBoolean("enable_qs_wifi$orientationValue", true)
-        wifiBtn.isVisible = wifiEnabled
-
         pinBtn.isVisible = sharedPreferences.getBoolean("enable_qs_pin$orientationValue", true)
 
         val volumeEnabled = sharedPreferences.getBoolean("enable_qs_vol$orientationValue", true)
@@ -1597,18 +1598,58 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         dateTv.isVisible = sharedPreferences.getBoolean("enable_qs_date$orientationValue", true)
 
-        val statusEnabled = bluetoothEnabled || batteryEnabled || wifiEnabled || volumeEnabled
+        val statusEnabled = bluetoothEnabled || batteryEnabled || volumeEnabled
         statusArea.isVisible = notifEnabled || statusEnabled
         statusArea.setPadding(if (statusEnabled) Utils.dpToPx(context, 4) else 0)
     }
 
     private fun launchAssistant() {
         val assistant = sharedPreferences.getString("app_assistant", "")
-        if (assistant!!.isNotEmpty()) launchApp(null, assistant) else {
-            try {
-                startActivity(Intent(Intent.ACTION_ASSIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            } catch (_: ActivityNotFoundException) {
+        if (!assistant.isNullOrEmpty()) { launchApp(null, assistant); return }
+
+        val intent = Intent(Intent.ACTION_ASSIST)
+        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        val packageName = resolveInfo?.activityInfo?.packageName
+        val isConfigured = resolveInfo != null && packageName != "android"
+
+        val targetIntent = if (isConfigured) {
+            Intent(Intent.ACTION_ASSIST)
+        } else {
+            Intent(Settings.ACTION_VOICE_INPUT_SETTINGS)
+        }
+        try {
+            startActivity(targetIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (_: ActivityNotFoundException) {
+        }
+    }
+
+    private fun updateAssistantButton() {
+        if (!::assistBtn.isInitialized) return
+        val assistant = sharedPreferences.getString("app_assistant", "")
+        if (!assistant.isNullOrEmpty()) {
+            val icon = try {
+                packageManager.getApplicationIcon(assistant)
+            } catch (_: Exception) {
+                ContextCompat.getDrawable(context, R.drawable.ic_assistant_star)
             }
+            assistBtn.setImageDrawable(icon)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_ASSIST)
+        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        val packageName = resolveInfo?.activityInfo?.packageName
+        val isConfigured = resolveInfo != null && packageName != "android"
+
+        if (isConfigured && packageName != null) {
+            val icon = try {
+                packageManager.getApplicationIcon(packageName)
+            } catch (_: Exception) {
+                ContextCompat.getDrawable(context, R.drawable.ic_assistant_star)
+            }
+            assistBtn.setImageDrawable(icon)
+        } else {
+            assistBtn.setImageResource(R.drawable.ic_assistant_star)
         }
     }
 
@@ -2118,7 +2159,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         pinBtn = dock!!.findViewById(R.id.pin_btn)
         statusArea = dock!!.findViewById(R.id.status_area)
         bluetoothBtn = dock!!.findViewById(R.id.bluetooth_btn)
-        wifiBtn = dock!!.findViewById(R.id.wifi_btn)
         volumeBtn = dock!!.findViewById(R.id.volume_btn)
         batteryBtn = dock!!.findViewById(R.id.battery_btn)
         dateTv = dock!!.findViewById(R.id.date_btn)
@@ -2210,6 +2250,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         updateNavigationBar()
         updateQuickSettings()
+        updateAssistantButton()
         updateDockShape()
         updateMenuIcon()
         loadPinnedApps()
@@ -2394,7 +2435,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                 }
             }
         }
-        wifiBtn.setImageResource(if (enabled) R.drawable.ic_wifi_on else R.drawable.ic_wifi_off)
     }
 
     private fun updateBluetoothStatus() {
@@ -2566,6 +2606,30 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             )
         }
         dialog.show()
+    }
+
+    // userProfiles only returns profiles for the current user (e.g. work/clone), not other users on the device.
+    private fun isMultiUser(): Boolean {
+        val userManager = getSystemService(USER_SERVICE) as? UserManager ?: return false
+        try {
+            val getUserCountMethod = userManager.javaClass.getMethod("getUserCount")
+            val count = getUserCountMethod.invoke(userManager) as? Int
+            if (count != null) {
+                return count > 1
+            }
+        } catch (_: Exception) {
+        }
+
+        try {
+            val getUsersMethod = userManager.javaClass.getMethod("getUsers")
+            val users = getUsersMethod.invoke(userManager) as? List<*>
+            if (users != null) {
+                return users.size > 1
+            }
+        } catch (_: Exception) {
+        }
+
+        return false
     }
 
     private val wifiNetworkCallback = object : ConnectivityManager.NetworkCallback() {

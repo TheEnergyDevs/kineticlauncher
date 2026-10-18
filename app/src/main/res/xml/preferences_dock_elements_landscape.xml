@@ -41,10 +41,6 @@
             android:title="Display battery level" />
         <SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="enable_qs_wifi_landscape"
-            android:title="@string/enable_qs_wifi_title" />
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
             android:key="enable_qs_vol_landscape"
             android:title="@string/enable_qs_vol_title" />
         <SwitchPreferenceCompat
