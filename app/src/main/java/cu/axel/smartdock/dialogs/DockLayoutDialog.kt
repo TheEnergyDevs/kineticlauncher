@@ -17,7 +17,6 @@ class DockLayoutDialog(context: Context, asOverlay: Boolean = false) {
             editor.putBoolean("enable_nav_recents", which != 0)
             editor.putBoolean("enable_qs_vol", which != 0)
             editor.putBoolean("enable_qs_date", which != 0)
-            //editor.putBoolean("enable_qs_notif", which != 0)
             editor.putBoolean("app_menu_fullscreen", which != 2)
             editor.putString("launch_mode", if (which != 2) "fullscreen" else "standard")
             editor.putString(

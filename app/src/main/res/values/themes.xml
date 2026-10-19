@@ -34,6 +34,9 @@
         <item name="toolbarStyle">?attr/toolbarSurfaceStyle</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.Corner.Medium</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
 
     <style name="AppTheme.Dock" parent="Theme.Material3.Dark">
@@ -43,6 +46,9 @@
         <item name="colorPrimary">@color/action</item>
         <item name="colorSecondaryContainer">#FFFFFF</item>
         <item name="colorOnSecondaryContainer">#FFFFFF</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.Corner.Medium</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
 
     <style name="AppTheme.Dock.Dialog" parent="AppTheme.Dock">

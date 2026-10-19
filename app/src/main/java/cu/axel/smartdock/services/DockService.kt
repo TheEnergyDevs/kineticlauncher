@@ -58,11 +58,13 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.view.ViewTreeObserver
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.PathInterpolator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -163,7 +165,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private lateinit var batteryBtn: TextView
     private lateinit var volumeBtn: ImageView
     private lateinit var pinBtn: ImageView
-    private lateinit var notificationBtn: TextView
     private lateinit var searchTv: TextView
     private var topRightCorner: Button? = null
     private var bottomRightCorner: Button? = null
@@ -487,17 +488,19 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (!isPinned)
-            return
-
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED) {
-            if (event.windowChanges.and(AccessibilityEvent.WINDOWS_CHANGE_REMOVED) == AccessibilityEvent.WINDOWS_CHANGE_REMOVED ||
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED || event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+                event.windowChanges.and(AccessibilityEvent.WINDOWS_CHANGE_REMOVED) == AccessibilityEvent.WINDOWS_CHANGE_REMOVED ||
                 event.windowChanges.and(
                     AccessibilityEvent.WINDOWS_CHANGE_ADDED
                 ) == AccessibilityEvent.WINDOWS_CHANGE_ADDED
             )
                 updateRunningTasks()
-        } else if (sharedPreferences.getBoolean(
+        }
+        if (!isPinned)
+            return
+
+        if (sharedPreferences.getBoolean(
                 "custom_toasts",
                 false
             ) && event.eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED && event.parcelableData !is Notification && event.text.isNotEmpty()
@@ -915,7 +918,19 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     fun showAppMenu() {
-        if (appMenuVisible || appMenu?.parent != null) return
+        if (appMenuVisible && appMenu?.parent != null) return
+        if (appMenu?.parent != null) {
+            appMenuVisible = true
+            appMenu!!.animate().cancel()
+            searchEt.requestFocus()
+            appMenu!!.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(300)
+                .setInterpolator(PathInterpolator(0.05f, 0.7f, 0.1f, 1f))
+                .start()
+            return
+        }
 
         val layoutParams: WindowManager.LayoutParams?
         val displayId =
@@ -1024,9 +1039,19 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         appMenu!!.animate().cancel()
         appMenu!!.alpha = 0f
-        appMenu!!.scaleX = 0.88f
-        appMenu!!.scaleY = 0.88f
-        appMenu!!.translationY = Utils.dpToPx(context, 25).toFloat()
+        appMenu!!.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                appMenu!!.viewTreeObserver.removeOnPreDrawListener(this)
+                appMenu!!.translationY = appMenu!!.height.toFloat()
+                appMenu!!.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(300)
+                    .setInterpolator(PathInterpolator(0.05f, 0.7f, 0.1f, 1f))
+                    .start()
+                return true
+            }
+        })
 
         try {
             windowManager.addView(appMenu, layoutParams)
@@ -1034,15 +1059,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             return
         }
         appMenuVisible = true
-
-        appMenu!!.animate()
-            .alpha(1f)
-            .scaleX(1f)
-            .scaleY(1f)
-            .translationY(0f)
-            .setDuration(220)
-            .setInterpolator(DecelerateInterpolator())
-            .start()
     }
 
     fun hideAppMenu() {
@@ -1059,13 +1075,12 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         appMenuVisible = false
         val menuView = appMenu ?: return
         menuView.animate().cancel()
+        val slideDist = if (menuView.height > 0) menuView.height.toFloat() else Utils.dpToPx(context, 540).toFloat()
         menuView.animate()
             .alpha(0f)
-            .scaleX(0.9f)
-            .scaleY(0.9f)
-            .translationY(Utils.dpToPx(context, 20).toFloat())
-            .setDuration(160)
-            .setInterpolator(AccelerateInterpolator())
+            .translationY(slideDist)
+            .setDuration(200)
+            .setInterpolator(PathInterpolator(0.3f, 0f, 0.8f, 0.15f))
             .withEndAction {
                 if (menuView.parent != null) {
                     try {
@@ -1606,9 +1621,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun updateQuickSettings() {
-        val notifEnabled = sharedPreferences.getBoolean("enable_qs_notif$orientationValue", true)
-        notificationBtn.isVisible = notifEnabled
-
         val bluetoothEnabled =
             sharedPreferences.getBoolean("enable_qs_bluetooth$orientationValue", false)
         bluetoothBtn.isVisible = bluetoothEnabled
@@ -1625,7 +1637,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         dateTv.isVisible = sharedPreferences.getBoolean("enable_qs_date$orientationValue", true)
 
         val statusEnabled = bluetoothEnabled || batteryEnabled || volumeEnabled
-        statusArea.isVisible = notifEnabled || statusEnabled
+        statusArea.isVisible = statusEnabled
         statusArea.setPadding(if (statusEnabled) Utils.dpToPx(context, 4) else 0)
     }
 
@@ -1972,7 +1984,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         homeBtn = dock!!.findViewById(R.id.home_btn)
         recentBtn = dock!!.findViewById(R.id.recents_btn)
         assistBtn = dock!!.findViewById(R.id.assist_btn)
-        notificationBtn = dock!!.findViewById(R.id.notifications_btn)
         pinBtn = dock!!.findViewById(R.id.pin_btn)
         statusArea = dock!!.findViewById(R.id.status_area)
         bluetoothBtn = dock!!.findViewById(R.id.bluetooth_btn)
@@ -2027,13 +2038,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             true
         }
 
-        notificationBtn.setOnClickListener {
-            performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS)
-        }
         pinBtn.setOnClickListener { togglePin() }
-        statusArea.setOnClickListener {
-            performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS)
-        }
+        statusArea.setOnClickListener(null)
         dateTv.setOnClickListener {
             launchApp(
                 null,
@@ -2282,7 +2288,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             notificationBridge = INotificationServiceBridge.Stub.asInterface(p1)
             notificationBridge?.registerCallback(object : INotificationCallback.Stub() {
                 override fun onNotificationPosted(sbn: StatusBarNotification?) {
-                    updateNotificationCount()
                     notificationLayout?.let {
                         it.updateNotificationLayout(sbn!!)
                         windowManager.updateViewLayout(
@@ -2293,7 +2298,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                 }
 
                 override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-                    updateNotificationCount()
                 }
 
             })
@@ -2349,16 +2353,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         notificationBridge?.mCancelNotification(notification.key)
     }
 
-    private fun updateNotificationCount() {
-        val count = notificationBridge?.notificationCount ?: 0
-        if (count > 0) {
-            notificationBtn.setBackgroundResource(R.drawable.circle)
-            notificationBtn.text = count.toString()
-        } else {
-            notificationBtn.setBackgroundResource(R.drawable.ic_expand_up_circle)
-            notificationBtn.text = ""
-        }
-    }
+
 
     private fun showSettingsPermissionDialog() {
         val dialog = DockDialog(context, true)
