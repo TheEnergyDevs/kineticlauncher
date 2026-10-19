@@ -59,8 +59,10 @@ import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -144,9 +146,6 @@ const val DOCK_SERVICE_ACTION = "dock_service_action"
 class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, OnTouchListener,
     OnAppClickListener, OnDockAppClickListener, OnNotificationClickListener {
 
-    private var bluetoothButton: ImageView? = null
-    private var wifiButton: ImageView? = null
-    private var notificationsLv: RecyclerView? = null
     private var wifiManagerWrapper: WifiManagerWrapper? = null
     private var bluetoothManagerWrapper: BluetoothManagerWrapper? = null
     private var activityManagerWrapper: ActivityManagerWrapper? = null
@@ -172,7 +171,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private var appMenu: LinearLayout? = null
     private lateinit var searchLayout: LinearLayout
     private var powerMenu: LinearLayout? = null
-    private var quickSettingsPanel: LinearLayout? = null
     private lateinit var searchEntry: LinearLayout
     private lateinit var dockLayout: RelativeLayout
     private lateinit var windowManager: WindowManager
@@ -180,22 +178,13 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private var appMenuVisible = false
     private var powerMenuVisible = false
     private var isPinned = false
-    private var quickSettingsPanelVisible = false
     private var systemApp = false
     private var preferSecondaryDisplay = false
-    private lateinit var dockLayoutParams: WindowManager.LayoutParams
-    private lateinit var searchEt: EditText
-    private lateinit var tasksGv: RecyclerView
-    private lateinit var favoritesGv: RecyclerView
-    private lateinit var appsGv: RecyclerView
-    private lateinit var wifiManager: WifiManager
-    private lateinit var batteryReceiver: BatteryStatsReceiver
-    private lateinit var soundEventsReceiver: SoundEventsReceiver
-    private lateinit var gestureDetector: GestureDetector
     private lateinit var db: DBHelper
     private lateinit var dockHandler: Handler
     private var dock: HoverInterceptorLayout? = null
     private lateinit var bluetoothManager: BluetoothManager
+    private lateinit var wifiManager: WifiManager
     private lateinit var pinnedApps: ArrayList<App>
     private lateinit var dateTv: TextClock
     private var maxApps = 0
@@ -205,6 +194,11 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private var lastUpdate: Long = 0
     private var dockHeight: Int = 0
     private lateinit var handleLayoutParams: WindowManager.LayoutParams
+    private lateinit var dockLayoutParams: WindowManager.LayoutParams
+    private lateinit var searchEt: EditText
+    private lateinit var tasksGv: RecyclerView
+    private lateinit var favoritesGv: RecyclerView
+    private lateinit var appsGv: RecyclerView
     private lateinit var launcherApps: LauncherApps
     private lateinit var displayManager: DisplayManager
     private lateinit var displayListener: DisplayManager.DisplayListener
@@ -214,6 +208,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private lateinit var connectivityManager: ConnectivityManager
     private var notificationLayout: NotificationLayout? = null
     private lateinit var statusArea: LinearLayout
+    private lateinit var batteryReceiver: BatteryStatsReceiver
+    private lateinit var soundEventsReceiver: SoundEventsReceiver
+    private lateinit var gestureDetector: GestureDetector
     override fun onCreate() {
         super.onCreate()
         db = DBHelper(this)
@@ -363,27 +360,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             IntentFilter(Intent.ACTION_BATTERY_CHANGED),
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
-
-        ContextCompat.registerReceiver(this, object : BroadcastReceiver() {
-            override fun onReceive(p0: Context?, p1: Intent?) {
-                updateWiFiStatus()
-            }
-
-        }, IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED)
-
-        ContextCompat.registerReceiver(this, object : BroadcastReceiver() {
-            override fun onReceive(p0: Context?, p1: Intent?) {
-                updateBluetoothStatus()
-            }
-
-        }, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED)
-
-        connectivityManager.registerNetworkCallback(
-            NetworkRequest.Builder().addTransportType(
-                NetworkCapabilities.TRANSPORT_WIFI
-            ).build(), wifiNetworkCallback
-        )
-
 
         bindNotificationService()
 
@@ -779,15 +755,25 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         if (dockLayoutParams.height != dockHeight) {
             dockLayoutParams.height = dockHeight
-            windowManager.updateViewLayout(dock, dockLayoutParams)
+            try {
+                windowManager.updateViewLayout(dock, dockLayoutParams)
+            } catch (_: Exception) {}
         }
 
         dockHandler.removeCallbacksAndMessages(null)
         updateRunningTasks()
         updateAssistantButton()
-        val anim = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+
+        dockLayout.animate().cancel()
         dockLayout.visibility = View.VISIBLE
-        dockLayout.startAnimation(anim)
+        dockLayout.alpha = 0f
+        dockLayout.translationY = dockHeight.toFloat()
+        dockLayout.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(220)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 
     fun pinDock() {
@@ -808,10 +794,13 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         dockHandler.removeCallbacksAndMessages(null)
         dockHandler.postDelayed({
             if (!isPinned) {
-                val animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
-                animation.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(p1: Animation) {}
-                    override fun onAnimationEnd(p1: Animation) {
+                dockLayout.animate().cancel()
+                dockLayout.animate()
+                    .alpha(0f)
+                    .translationY(dockHeight.toFloat())
+                    .setDuration(180)
+                    .setInterpolator(AccelerateInterpolator())
+                    .withEndAction {
                         dockLayout.visibility = View.GONE
                         val activationMethod =
                             sharedPreferences.getString("activation_method", "swipe")!!
@@ -819,7 +808,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                             val height =
                                 sharedPreferences.getString("dock_activation_area", "10")!!.toInt()
                             dockLayoutParams.height = Utils.dpToPx(context, height)
-                            windowManager.updateViewLayout(dock, dockLayoutParams)
+                            try {
+                                windowManager.updateViewLayout(dock, dockLayoutParams)
+                            } catch (_: Exception) {}
                         } else {
                             dock!!.visibility = View.GONE
                             dockHandle!!.visibility = View.VISIBLE
@@ -827,10 +818,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                         if (sharedPreferences.getBoolean("first_hide", true))
                             showFirstDockHideDialog(activationMethod)
                     }
-
-                    override fun onAnimationRepeat(p1: Animation) {}
-                })
-                dockLayout.startAnimation(animation)
+                    .start()
             }
         }, delay.toLong())
     }
@@ -908,9 +896,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         }
         //Hack to ensure the launched app is already on the top of the stack
         dockHandler.postDelayed({ updateRunningTasks() }, 1200)
-
-        if (quickSettingsPanelVisible)
-            hideQuickSettingsPanel()
     }
 
     private fun setOrientation() {
@@ -930,6 +915,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     fun showAppMenu() {
+        if (appMenuVisible || appMenu?.parent != null) return
+
         val layoutParams: WindowManager.LayoutParams?
         val displayId =
             if (preferSecondaryDisplay) DeviceUtils.getSecondaryDisplay(context).displayId else Display.DEFAULT_DISPLAY
@@ -1035,10 +1022,27 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         searchEt.showSoftInputOnFocus = softwareKeyboard || tabletMode
         searchEt.requestFocus()
 
-        windowManager.addView(appMenu, layoutParams)
+        appMenu!!.animate().cancel()
+        appMenu!!.alpha = 0f
+        appMenu!!.scaleX = 0.88f
+        appMenu!!.scaleY = 0.88f
+        appMenu!!.translationY = Utils.dpToPx(context, 25).toFloat()
+
+        try {
+            windowManager.addView(appMenu, layoutParams)
+        } catch (_: Exception) {
+            return
+        }
         appMenuVisible = true
-        val anim = AnimationUtils.loadAnimation(context, R.anim.app_menu_open)
-        appMenu!!.startAnimation(anim)
+
+        appMenu!!.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .translationY(0f)
+            .setDuration(220)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 
     fun hideAppMenu() {
@@ -1048,23 +1052,28 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         if (adapter is AppAdapter) {
             adapter.filter("")
         }
-        if (appMenuVisible && appMenu != null) {
-            val menuView = appMenu
-            val anim = AnimationUtils.loadAnimation(context, R.anim.app_menu_close)
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-                override fun onAnimationEnd(p0: Animation?) {
-                    if (menuView != null && menuView.parent != null) {
-                        try {
-                            windowManager.removeView(menuView)
-                        } catch (_: Exception) {}
-                    }
-                }
-                override fun onAnimationRepeat(p0: Animation?) {}
-            })
-            menuView!!.startAnimation(anim)
+        if (!appMenuVisible || appMenu?.parent == null) {
+            appMenuVisible = false
+            return
         }
         appMenuVisible = false
+        val menuView = appMenu ?: return
+        menuView.animate().cancel()
+        menuView.animate()
+            .alpha(0f)
+            .scaleX(0.9f)
+            .scaleY(0.9f)
+            .translationY(Utils.dpToPx(context, 20).toFloat())
+            .setDuration(160)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction {
+                if (menuView.parent != null) {
+                    try {
+                        windowManager.removeView(menuView)
+                    } catch (_: Exception) {}
+                }
+            }
+            .start()
     }
 
     private suspend fun fetchInstalledApps(): ArrayList<App> = withContext(Dispatchers.Default) {
@@ -1684,273 +1693,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         )
     }
 
-    private fun showSystemWiFiPanel() {
-        startActivity(Intent(Settings.Panel.ACTION_WIFI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-    }
-
-    private fun toggleQuickSettingsPanel(selectedTab: Int = 0) {
-        if (!quickSettingsPanelVisible)
-            showQuickSettingsPanel(selectedTab)
-        else
-            hideQuickSettingsPanel()
-    }
-
-    private fun hideQuickSettingsPanel() {
-        if (quickSettingsPanelVisible && quickSettingsPanel != null) {
-            val panelView = quickSettingsPanel
-            val anim = AnimationUtils.loadAnimation(context, R.anim.qs_panel_close)
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-                override fun onAnimationEnd(p0: Animation?) {
-                    if (panelView != null && panelView.parent != null) {
-                        try {
-                            windowManager.removeView(panelView)
-                        } catch (_: Exception) {}
-                    }
-                }
-                override fun onAnimationRepeat(p0: Animation?) {}
-            })
-            panelView!!.startAnimation(anim)
-        }
-        quickSettingsPanelVisible = false
-        quickSettingsPanel = null
-        notificationsLv = null
-        wifiButton = null
-        bluetoothButton = null
-    }
-
-    @SuppressLint("ClickableViewAccessibility", "MissingPermission")
-    private fun showQuickSettingsPanel(selectedTab: Int = 0) {
-        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        val layoutParams = Utils.makeWindowParams(
-            Utils.dpToPx(context, 400), Utils.dpToPx(context, 305), context,
-            preferSecondaryDisplay
-        )
-        layoutParams.flags =
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-        layoutParams.y = Utils.dpToPx(context, 2) + dockHeight
-        layoutParams.x = Utils.dpToPx(context, 2)
-        layoutParams.gravity = Gravity.BOTTOM or Gravity.END
-        quickSettingsPanel =
-            LayoutInflater.from(ContextThemeWrapper(context, R.style.AppTheme_Dock))
-                .inflate(R.layout.quick_settings_panel, null) as LinearLayout
-        quickSettingsPanel!!.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_OUTSIDE
-                && (event.y < quickSettingsPanel!!.measuredHeight || event.x < quickSettingsPanel!!.x)
-            )
-                hideQuickSettingsPanel()
-
-            false
-        }
-        val tabLayout = quickSettingsPanel!!.findViewById<TabLayout>(R.id.qs_tab_layout)
-        val notificationArea =
-            quickSettingsPanel!!.findViewById<LinearLayout>(R.id.notifications_layout)
-        val quickSettingsArea =
-            quickSettingsPanel!!.findViewById<LinearLayout>(R.id.quick_settings_layout)
-        val cancelAllButton = quickSettingsPanel!!.findViewById<ImageView>(R.id.cancel_all_n_btn)
-        cancelAllButton.setOnClickListener { notificationBridge?.cancelAll() }
-        val volumeButton = quickSettingsPanel!!.findViewById<ImageView>(R.id.volume_btn)
-        val volumeSeekbar = quickSettingsPanel!!.findViewById<SeekBar>(R.id.volume_seekbar)
-        val brightnessButton = quickSettingsPanel!!.findViewById<ImageView>(R.id.brightness_btn)
-        val brightnessSeekbar = quickSettingsPanel!!.findViewById<SeekBar>(R.id.brightness_seekbar)
-        brightnessSeekbar.progress =
-            DeviceUtils.getSystemSetting(this, Settings.System.SCREEN_BRIGHTNESS, "0").toInt()
-        val canWriteSettings = DeviceUtils.canWriteSettings(this)
-        brightnessSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(
-                p0: SeekBar?,
-                p1: Int,
-                p2: Boolean
-            ) {
-                if (canWriteSettings) {
-                    DeviceUtils.putSystemSetting(
-                        this@DockService,
-                        Settings.System.SCREEN_BRIGHTNESS,
-                        p1.toString()
-                    )
-                } else
-                    showSettingsPermissionDialog()
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(p0: SeekBar?) {
-
-            }
-        })
-        volumeSeekbar.max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        volumeSeekbar.progress = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-        volumeSeekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
-            }
-
-            override fun onStartTrackingTouch(p1: SeekBar) {}
-            override fun onStopTrackingTouch(p1: SeekBar) {}
-        })
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                notificationArea.isVisible = p0!!.position == 0
-                cancelAllButton.isVisible = p0.position == 0
-                quickSettingsArea.isVisible = p0.position == 1
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-
-            }
-
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-
-            }
-
-        })
-        tabLayout.selectTab(tabLayout.getTabAt(selectedTab))
-        ColorUtils.applySecondaryColor(context, sharedPreferences, volumeButton)
-        wifiButton = quickSettingsPanel!!.findViewById(R.id.wifi_btn)
-        val wifiTile = quickSettingsPanel!!.findViewById<LinearLayout>(R.id.wifi_tile)
-        bluetoothButton = quickSettingsPanel!!.findViewById<ImageView>(R.id.bluetooth_btn)
-        val bluetoothTile = quickSettingsPanel!!.findViewById<LinearLayout>(R.id.bluetooth_tile)
-        val notificationsBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.notifications_btn)
-        val orientationBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.btn_orientation)
-        val touchModeBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.btn_touch_mode)
-        val screenshotBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.btn_screenshot)
-        val screencapBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.btn_screencast)
-        val settingsBtn = quickSettingsPanel!!.findViewById<ImageView>(R.id.btn_settings)
-        wifiButton!!.setOnClickListener {
-            if (DeviceUtils.hasShizukuPermission() && wifiManagerWrapper?.isAlive() == true)
-                wifiManagerWrapper?.setWifiEnabled(!wifiManager.isWifiEnabled)
-            else {
-                showSystemWiFiPanel()
-                hideQuickSettingsPanel()
-            }
-        }
-        wifiTile.setOnClickListener {
-            showSystemWiFiPanel()
-            hideQuickSettingsPanel()
-        }
-
-        bluetoothButton?.setOnClickListener {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                if (!bluetoothManager.adapter.isEnabled)
-                    bluetoothManager.adapter?.enable()
-                else
-                    bluetoothManager.adapter?.disable()
-            } else {
-                if (DeviceUtils.hasShizukuPermission() && bluetoothManagerWrapper?.isAlive() == true)
-                    bluetoothManagerWrapper?.setBluetoothEnabled(!bluetoothManager.adapter.isEnabled)
-                else {
-                    openBluetoothSettings()
-                }
-            }
-        }
-        bluetoothTile.setOnClickListener {
-            openBluetoothSettings()
-        }
-
-        notificationsLv = quickSettingsPanel!!.findViewById(R.id.notification_lv)
-
-        ColorUtils.applySecondaryColor(context, sharedPreferences, wifiTile)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, bluetoothTile)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, brightnessButton)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, notificationsBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, orientationBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, touchModeBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, screencapBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, screenshotBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, settingsBtn)
-        touchModeBtn.setOnClickListener {
-            hideQuickSettingsPanel()
-            DockLayoutDialog(context, true)
-        }
-        orientationBtn.setImageResource(
-            if (sharedPreferences.getBoolean(
-                    "lock_landscape",
-                    true
-                )
-            ) R.drawable.ic_screen_rotation_off else R.drawable.ic_screen_rotation_on
-        )
-        orientationBtn.setOnClickListener {
-            sharedPreferences.edit {
-                putBoolean("lock_landscape", !sharedPreferences.getBoolean("lock_landscape", true))
-            }
-            orientationBtn
-                .setImageResource(
-                    if (sharedPreferences.getBoolean(
-                            "lock_landscape",
-                            true
-                        )
-                    ) R.drawable.ic_screen_rotation_off else R.drawable.ic_screen_rotation_on
-                )
-        }
-        screenshotBtn.setOnClickListener {
-            hideQuickSettingsPanel()
-            takeScreenshot()
-        }
-        screencapBtn.setOnClickListener {
-            hideQuickSettingsPanel()
-            launchApp("standard", sharedPreferences.getString("app_rec", "")!!)
-        }
-        settingsBtn.setOnClickListener {
-            hideQuickSettingsPanel()
-            launchApp("standard", packageName)
-        }
-        notificationsBtn.setImageResource(
-            if (sharedPreferences.getBoolean(
-                    "show_notifications",
-                    true
-                )
-            ) R.drawable.ic_notifications else R.drawable.ic_notifications_off
-        )
-        notificationsBtn.setOnClickListener {
-            val showNotifications = sharedPreferences.getBoolean("show_notifications", true)
-            sharedPreferences.edit { putBoolean("show_notifications", !showNotifications) }
-            notificationsBtn.setImageResource(
-                if (!showNotifications) R.drawable.ic_notifications else R.drawable.ic_notifications_off
-            )
-            if (showNotifications) Toast.makeText(
-                context,
-                R.string.popups_disabled,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        ColorUtils.applyMainColor(context, sharedPreferences, quickSettingsPanel!!)
-        windowManager.addView(quickSettingsPanel, layoutParams)
-        quickSettingsPanelVisible = true
-        val anim = AnimationUtils.loadAnimation(context, R.anim.qs_panel_open)
-        quickSettingsPanel!!.startAnimation(anim)
-        updateNotificationArea()
-        updateWiFiStatus()
-        updateBluetoothStatus()
-    }
-
-    private fun updateNotificationArea() {
-        if (notificationBridge?.notifications != null) {
-            val ignoredApps =
-                sharedPreferences.getStringSet("ignored_notifications_panel", setOf())!!
-            val notifications =
-                notificationBridge?.notifications!!.filterNot { ignoredApps.contains(it.packageName) }
-                    .sortedWith(
-                        compareByDescending { AppUtils.isMediaNotification(it.notification) && it.isOngoing })
-                    .toTypedArray<StatusBarNotification>()
-            var adapter = notificationsLv!!.adapter
-            if (adapter is NotificationAdapter)
-                adapter.updateNotifications(notifications)
-            else {
-                adapter = NotificationAdapter(
-                    context,
-                    notifications,
-                    this
-                )
-                notificationsLv!!.adapter = adapter
-            }
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun showPowerMenu() {
+        if (powerMenuVisible || powerMenu?.parent != null) return
+
         val layoutParams = Utils.makeWindowParams(
             Utils.dpToPx(context, 400),
             Utils.dpToPx(context, 120), context, preferSecondaryDisplay
@@ -1991,36 +1737,57 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             lockScreen()
         }
         ColorUtils.applyMainColor(context, sharedPreferences, powerMenu!!)
-        windowManager.addView(powerMenu, layoutParams)
+
+        powerMenu!!.animate().cancel()
+        powerMenu!!.alpha = 0f
+        powerMenu!!.scaleX = 0.82f
+        powerMenu!!.scaleY = 0.82f
+
+        try {
+            windowManager.addView(powerMenu, layoutParams)
+        } catch (_: Exception) {
+            return
+        }
         topRightCorner!!.visibility = if (sharedPreferences.getBoolean(
                 "enable_corner_top_right",
                 false
             )
         ) View.VISIBLE else View.GONE
         powerMenuVisible = true
-        val anim = AnimationUtils.loadAnimation(context, R.anim.power_menu_open)
-        powerMenu!!.startAnimation(anim)
+
+        powerMenu!!.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(200)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 
     private fun hidePowerMenu() {
-        if (powerMenuVisible && powerMenu != null) {
-            val menuView = powerMenu
-            val anim = AnimationUtils.loadAnimation(context, R.anim.power_menu_close)
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-                override fun onAnimationEnd(p0: Animation?) {
-                    if (menuView != null && menuView.parent != null) {
-                        try {
-                            windowManager.removeView(menuView)
-                        } catch (_: Exception) {}
-                    }
-                }
-                override fun onAnimationRepeat(p0: Animation?) {}
-            })
-            menuView!!.startAnimation(anim)
+        if (!powerMenuVisible || powerMenu?.parent == null) {
+            powerMenuVisible = false
+            powerMenu = null
+            return
         }
         powerMenuVisible = false
-        powerMenu = null
+        val menuView = powerMenu ?: return
+        menuView.animate().cancel()
+        menuView.animate()
+            .alpha(0f)
+            .scaleX(0.85f)
+            .scaleY(0.85f)
+            .setDuration(150)
+            .setInterpolator(AccelerateInterpolator())
+            .withEndAction {
+                if (menuView.parent != null) {
+                    try {
+                        windowManager.removeView(menuView)
+                    } catch (_: Exception) {}
+                }
+                powerMenu = null
+            }
+            .start()
     }
 
     fun applyTheme() {
@@ -2146,7 +1913,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             unregisterReceiver(soundEventsReceiver)
         if (::displayListener.isInitialized && ::displayManager.isInitialized)
             displayManager.unregisterDisplayListener(displayListener)
-        connectivityManager.unregisterNetworkCallback(wifiNetworkCallback)
         removeAllViews()
         unbindService(notificationServiceConnection)
         super.onDestroy()
@@ -2262,17 +2028,11 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         }
 
         notificationBtn.setOnClickListener {
-            if (sharedPreferences.getBoolean("enable_notif_panel", true)) {
-                if (DeviceUtils.isServiceRunning(this, NotificationService::class.java)) {
-                    toggleQuickSettingsPanel()
-                } else {
-                    NotificationPermissionDialog(this, true)
-                }
-            } else performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS)
+            performGlobalAction(GLOBAL_ACTION_NOTIFICATIONS)
         }
         pinBtn.setOnClickListener { togglePin() }
         statusArea.setOnClickListener {
-            toggleQuickSettingsPanel(1)
+            performGlobalAction(GLOBAL_ACTION_QUICK_SETTINGS)
         }
         dateTv.setOnClickListener {
             launchApp(
@@ -2462,47 +2222,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         sharedPreferences.edit { putBoolean("first_hide", false) }
     }
 
-    private fun updateWiFiStatus() {
-        val wifiIcon = AppCompatResources.getDrawable(this, R.drawable.ic_wifi_on)!!
-        val enabled = wifiManager.isWifiEnabled
-        if (quickSettingsPanelVisible) {
-            if (enabled) {
-                wifiIcon.setColorFilter(
-                    getMainColors(sharedPreferences, context)[0],
-                    PorterDuff.Mode.SRC_ATOP
-                )
-                ColorUtils.applyColor(wifiButton!!, getColor(R.color.action))
-            } else {
-                ColorUtils.applyMainColor(context, sharedPreferences, wifiButton!!)
-            }
-            wifiButton?.setImageDrawable(wifiIcon)
-            val wifiSsidTv = quickSettingsPanel!!.findViewById<TextView>(R.id.wifi_ssid_tv)
-            wifiManagerWrapper?.getConnectionInfo()?.let {
-                if (it.ssid.startsWith("<") && it.ssid.endsWith(">"))
-                    wifiSsidTv.isVisible = false
-                else {
-                    wifiSsidTv.isVisible = true
-                    wifiSsidTv.text = it.ssid.replace("\"", "")
-                }
-            }
-        }
-    }
-
     private fun updateBluetoothStatus() {
-        val bluetoothIcon = AppCompatResources.getDrawable(this, R.drawable.ic_bluetooth)!!
         val enabled = bluetoothManager.adapter?.isEnabled ?: false
-        if (quickSettingsPanelVisible) {
-            if (enabled) {
-                bluetoothIcon.setColorFilter(
-                    getMainColors(sharedPreferences, context)[0],
-                    PorterDuff.Mode.SRC_ATOP
-                )
-                ColorUtils.applyColor(bluetoothButton!!, getColor(R.color.action))
-            } else {
-                ColorUtils.applyMainColor(context, sharedPreferences, bluetoothButton!!)
-            }
-            bluetoothButton?.setImageDrawable(bluetoothIcon)
-        }
         bluetoothBtn.setImageResource(if (enabled) R.drawable.ic_bluetooth else R.drawable.ic_bluetooth_off)
     }
 
@@ -2561,8 +2282,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             notificationBridge = INotificationServiceBridge.Stub.asInterface(p1)
             notificationBridge?.registerCallback(object : INotificationCallback.Stub() {
                 override fun onNotificationPosted(sbn: StatusBarNotification?) {
-                    if (quickSettingsPanelVisible)
-                        updateNotificationArea()
                     updateNotificationCount()
                     notificationLayout?.let {
                         it.updateNotificationLayout(sbn!!)
@@ -2574,8 +2293,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                 }
 
                 override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-                    if (quickSettingsPanelVisible)
-                        updateNotificationArea()
                     updateNotificationCount()
                 }
 
@@ -2681,22 +2398,5 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         }
 
         return false
-    }
-
-    private val wifiNetworkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            CoroutineScope(Dispatchers.Main).launch {
-                if (quickSettingsPanelVisible)
-                    updateWiFiStatus()
-            }
-        }
-
-        override fun onLost(network: Network) {
-            CoroutineScope(Dispatchers.Main).launch {
-                if (quickSettingsPanelVisible)
-                    updateWiFiStatus()
-            }
-        }
-
     }
 }
