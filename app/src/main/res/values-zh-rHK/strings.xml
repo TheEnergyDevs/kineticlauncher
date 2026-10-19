@@ -97,7 +97,6 @@
     <string name="enable_nav_recents_title">最近的</string>
     <string name="enable_nav_assist_title">助理</string>
     <string name="quick_settings">快速設置</string>
-    <string name="enable_notif_btn">通知</string>
     <string name="enable_qs_bluetooth_title">藍牙</string>
     <string name="enable_qs_battery_title">電池</string>
     <string name="enable_qs_vol_title">音量</string>

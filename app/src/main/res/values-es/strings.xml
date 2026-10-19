@@ -99,7 +99,6 @@
     <string name="tap_to_set_long_action">Toca para configurar la acción al dejar presionado/pasar el cursor del ratón</string>
     <string name="enable_nav_assist_title">Asistente</string>
     <string name="quick_settings">Ajustes rápidos</string>
-    <string name="enable_notif_btn">Notificaciones</string>
     <string name="enable_qs_bluetooth_title">Bluetooth</string>
     <string name="enable_qs_battery_title">Batería</string>
     <string name="enable_qs_vol_title">Volumen</string>

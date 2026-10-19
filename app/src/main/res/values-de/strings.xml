@@ -97,7 +97,6 @@
     <string name="enable_nav_recents_title">Zuletzt</string>
     <string name="enable_nav_assist_title">Assistent</string>
     <string name="quick_settings">Schnelleinstellungen</string>
-    <string name="enable_notif_btn">Benachrichtigungen</string>
     <string name="enable_qs_bluetooth_title">Bluetooth</string>
     <string name="enable_qs_battery_title">Akku</string>
     <string name="enable_qs_vol_title">Lautstärke</string>

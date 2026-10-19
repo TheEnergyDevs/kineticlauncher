@@ -53,17 +53,7 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp">
 
-                <TextView
-                    android:id="@+id/notifications_btn"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_margin="3dp"
-                    android:background="@drawable/ic_expand_up_circle"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:padding="2dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="12sp" />
+
 
                 <ImageView
                     android:id="@+id/volume_btn"

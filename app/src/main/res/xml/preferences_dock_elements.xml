@@ -22,10 +22,7 @@
             android:title="@string/enable_nav_assist_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/quick_settings">
-        <SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="enable_qs_notif"
-            android:title="@string/enable_notif_btn" />
+
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="enable_qs_bluetooth"
