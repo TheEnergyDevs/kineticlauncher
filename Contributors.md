@@ -1,3 +1,11 @@
+## Our contributors
+
+- [@shemeshr](https://github.com/shemeshr)
+- [@glassisbetter](https://github.com/glassisbetter)
+
+
+## Contributors from SmartDock
+
 - [Kirandeep Maan](https://github.com/KSMaan45)
 
 - [utzcoz](https://github.com/utzcoz)
@@ -10,4 +18,4 @@
 
 - [Fire7ly](https://github.com/Fire7ly)
 
-And all the amazing people in [this group](https://t.me/smartdock358) that has helped shaping SmartDock
+[Ppl in this group](https://t.me/smartdock358) that has helped shaping SmartDock
