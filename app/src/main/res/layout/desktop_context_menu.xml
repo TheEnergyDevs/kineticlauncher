@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/context_menu_card"
+    android:layout_width="220dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/m3_expressive_card"
+    android:elevation="12dp"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Wallpapers Item -->
+    <LinearLayout
+        android:id="@+id/menu_item_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/m3_expressive_pill"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/wallpapers"
+            android:src="@drawable/ic_wallpaper" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_flex"
+            android:fontVariationSettings="'wght' 600, 'ROND' 75, 'opsz' 15"
+            android:text="@string/wallpapers"
+            android:textColor="#1F1F23"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <!-- Widgets Item -->
+    <LinearLayout
+        android:id="@+id/menu_item_widgets"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/m3_expressive_pill"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/widgets"
+            android:src="@drawable/ic_layouts" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_flex"
+            android:fontVariationSettings="'wght' 600, 'ROND' 75, 'opsz' 15"
+            android:text="@string/widgets"
+            android:textColor="#1F1F23"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <!-- Home Settings Item -->
+    <LinearLayout
+        android:id="@+id/menu_item_settings"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/m3_expressive_pill"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/home_settings"
+            android:src="@drawable/ic_home" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_flex"
+            android:fontVariationSettings="'wght' 600, 'ROND' 75, 'opsz' 15"
+            android:text="@string/home_settings"
+            android:textColor="#1F1F23"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</LinearLayout>

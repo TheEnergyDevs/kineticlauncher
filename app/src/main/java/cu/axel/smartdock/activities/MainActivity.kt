@@ -9,9 +9,14 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.Toast
 import android.widget.ViewSwitcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -23,13 +28,16 @@ import cu.axel.smartdock.R
 import cu.axel.smartdock.dialogs.DockLayoutDialog
 import cu.axel.smartdock.dialogs.DonateDialog
 import cu.axel.smartdock.dialogs.NotificationPermissionDialog
-import cu.axel.smartdock.fragments.PreferencesFragment
+import cu.axel.smartdock.fragments.AdvancedPreferences
+import cu.axel.smartdock.fragments.AppMenuPreferences
+import cu.axel.smartdock.fragments.AppearancePreferences
+import cu.axel.smartdock.fragments.DesktopPreferences
+import cu.axel.smartdock.fragments.HelpAboutPreferences
 import cu.axel.smartdock.services.NotificationService
 import cu.axel.smartdock.utils.ColorUtils
 import cu.axel.smartdock.utils.DeviceUtils
 import rikka.shizuku.Shizuku
 import kotlin.reflect.KFunction0
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
@@ -46,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private var hasStoragePermission = false
     private var settingsOverlaysAllowed = false
     private var hasShizukuPermission = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -56,21 +65,54 @@ class MainActivity : AppCompatActivity() {
         if (launchCount == 5) {
             DonateDialog(this)
         }
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.settings_container, PreferencesFragment())
-            .commit()
+
+        val settingsHub = findViewById<ScrollView>(R.id.settings_hub)
+        val settingsContainer = findViewById<FrameLayout>(R.id.settings_container)
+        val backBtn = findViewById<ImageView>(R.id.settings_back_btn)
+
+        fun openPreferenceFragment(fragment: androidx.fragment.app.Fragment) {
+            settingsHub?.visibility = View.GONE
+            settingsContainer?.visibility = View.VISIBLE
+            backBtn?.visibility = View.VISIBLE
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.settings_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        findViewById<View>(R.id.card_fonts)?.setOnClickListener { openPreferenceFragment(AppearancePreferences()) }
+        findViewById<View>(R.id.card_icons)?.setOnClickListener { openPreferenceFragment(AppearancePreferences()) }
+        findViewById<View>(R.id.card_search)?.setOnClickListener { openPreferenceFragment(AppMenuPreferences()) }
+        findViewById<View>(R.id.card_grid_widgets)?.setOnClickListener { openPreferenceFragment(DesktopPreferences()) }
+        findViewById<View>(R.id.card_updates)?.setOnClickListener { openPreferenceFragment(HelpAboutPreferences()) }
+        findViewById<View>(R.id.card_advanced)?.setOnClickListener { openPreferenceFragment(AdvancedPreferences()) }
+
+        backBtn?.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    if (supportFragmentManager.backStackEntryCount <= 1) {
+                        settingsHub?.visibility = View.VISIBLE
+                        settingsContainer?.visibility = View.GONE
+                        backBtn?.visibility = View.GONE
+                    }
+                } else {
+                    finish()
+                }
+            }
+        })
+
         if (!DeviceUtils.hasStoragePermission(this)) {
             DeviceUtils.requestStoragePermissions(this)
         }
-        if (!DeviceUtils.canDrawOverOtherApps(this) || !DeviceUtils.isAccessibilityServiceEnabled(
-                this
-            )
-        )
+        if (!DeviceUtils.canDrawOverOtherApps(this) || !DeviceUtils.isAccessibilityServiceEnabled(this))
             showPermissionsDialog()
         if (sharedPreferences.getInt("dock_layout", -1) == -1)
             DockLayoutDialog(this)
-
-
 
         Shizuku.addBinderReceivedListener {
             if (Shizuku.pingBinder()) {
@@ -81,7 +123,6 @@ class MainActivity : AppCompatActivity() {
         Shizuku.addBinderDeadListener {
             Log.e(packageName, "dead")
         }
-
     }
 
     override fun onResume() {

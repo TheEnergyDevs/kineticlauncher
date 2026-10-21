@@ -1,10 +1,12 @@
 package cu.axel.smartdock.adapters
 
+import android.content.ClipData
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -37,6 +39,10 @@ class AppAdapter(
     interface OnAppClickListener {
         fun onAppClicked(app: App, item: View)
         fun onAppLongClicked(app: App, item: View)
+    }
+
+    interface OnAppCombineListener {
+        fun onCombineApps(sourceApp: App, targetApp: App)
     }
 
     init {
@@ -103,7 +109,6 @@ class AppAdapter(
         this.apps = newApps
         this.allApps.clear()
         this.allApps.addAll(newApps)
-        // If a query is active, re-apply it
         if (::query.isInitialized && query.isNotEmpty()) {
             filter(query)
         } else {
@@ -155,6 +160,9 @@ class AppAdapter(
         fun bind(app: App, listener: OnAppClickListener) {
             itemView.setOnClickListener { view -> listener.onAppClicked(app, view) }
             itemView.setOnLongClickListener { view ->
+                val clipData = ClipData.newPlainText("app_pkg", app.packageName)
+                val shadow = View.DragShadowBuilder(view)
+                view.startDragAndDrop(clipData, shadow, app, 0)
                 listener.onAppLongClicked(app, view)
                 true
             }
@@ -164,6 +172,34 @@ class AppAdapter(
                     return@setOnTouchListener true
                 }
                 false
+            }
+            itemView.setOnDragListener { v, event ->
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_STARTED -> true
+                    DragEvent.ACTION_DRAG_ENTERED -> {
+                        v.alpha = 0.5f
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_EXITED -> {
+                        v.alpha = 1.0f
+                        true
+                    }
+                    DragEvent.ACTION_DROP -> {
+                        v.alpha = 1.0f
+                        val draggedApp = event.localState as? App
+                        if (draggedApp != null && draggedApp.packageName != app.packageName) {
+                            if (listener is OnAppCombineListener) {
+                                listener.onCombineApps(draggedApp, app)
+                            }
+                        }
+                        true
+                    }
+                    DragEvent.ACTION_DRAG_ENDED -> {
+                        v.alpha = 1.0f
+                        true
+                    }
+                    else -> false
+                }
             }
         }
     }

@@ -36,14 +36,7 @@
             android:dependency="enable_qs_battery"
             android:key="show_battery_level"
             android:title="Display battery level" />
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="enable_qs_vol"
-            android:title="@string/enable_qs_vol_title" />
-        <SwitchPreferenceCompat
-            android:defaultValue="true"
-            android:key="enable_qs_date"
-            android:title="@string/enable_qs_date_title" />
+
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="enable_qs_pin"

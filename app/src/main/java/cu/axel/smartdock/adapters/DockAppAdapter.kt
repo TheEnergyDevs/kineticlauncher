@@ -59,9 +59,13 @@ class DockAppAdapter(
                     ColorUtils.manipulateColor(ColorUtils.getDrawableDominantColor(app.icon), 2f)
                 )
 
+            val isForeground = app.packageName == AppUtils.currentApp
             viewHolder.runningIndicator.alpha = if (app.tasks[0].id != -1) 1f else 0f
             viewHolder.runningIndicator.layoutParams.width =
-                Utils.dpToPx(context, if (app.packageName == AppUtils.currentApp) 16 else 8)
+                Utils.dpToPx(context, if (isForeground) 16 else 6)
+            viewHolder.runningIndicator.layoutParams.height =
+                Utils.dpToPx(context, if (isForeground) 3 else 6)
+            viewHolder.runningIndicator.requestLayout()
 
             if (size > 1) {
                 viewHolder.taskCounter.text = size.toString()

@@ -1,6 +1,5 @@
 package cu.axel.smartdock.services
 
-import android.Manifest
 import android.accessibilityservice.AccessibilityService
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -28,6 +27,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.Configuration
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.hardware.display.DisplayManager
 import android.hardware.usb.UsbManager
 import android.media.AudioManager
@@ -163,8 +163,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private lateinit var powerBtn: ImageView
     private lateinit var bluetoothBtn: ImageView
     private lateinit var batteryBtn: TextView
-    private lateinit var volumeBtn: ImageView
-    private lateinit var pinBtn: ImageView
     private lateinit var searchTv: TextView
     private var topRightCorner: Button? = null
     private var bottomRightCorner: Button? = null
@@ -187,7 +185,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private lateinit var bluetoothManager: BluetoothManager
     private lateinit var wifiManager: WifiManager
     private lateinit var pinnedApps: ArrayList<App>
-    private lateinit var dateTv: TextClock
     private var maxApps = 0
     private var maxAppsLandscape = 0
     private lateinit var context: Context
@@ -781,13 +778,11 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     fun pinDock() {
         isPinned = true
-        pinBtn.setImageResource(R.drawable.ic_pin)
         if (dockLayout.isGone)
             showDock()
     }
 
     private fun unpinDock() {
-        pinBtn.setImageResource(R.drawable.ic_unpin)
         isPinned = false
         if (dockLayout.isVisible)
             hideDock(500)
@@ -851,6 +846,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         newInstance: Boolean = false,
         rememberMode: Boolean = true
     ) {
+        if (packageName == null) return
+
         var launchMode = mode
         if (launchMode == null)
             launchMode = getDefaultLaunchMode(packageName)
@@ -858,9 +855,22 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             if (rememberMode && sharedPreferences.getBoolean(
                     "remember_launch_mode",
                     true
-                ) && packageName != null
+                )
             )
                 db.saveLaunchMode(packageName, launchMode)
+
+        if (!newInstance) {
+            val existingTask = tasks.find { it.packageName == packageName }
+            if (existingTask != null && existingTask.id != -1) {
+                try {
+                    activityManager.moveTaskToFront(existingTask.id, 0)
+                    if (appMenuVisible)
+                        hideAppMenu()
+                    dockHandler.postDelayed({ updateRunningTasks() }, 300)
+                    return
+                } catch (_: Exception) {}
+            }
+        }
 
         val options = AppUtils.makeActivityOptions(context, launchMode, dockHeight, displayId)
 
@@ -1629,14 +1639,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             sharedPreferences.getBoolean("enable_qs_battery$orientationValue", false)
         batteryBtn.isVisible = batteryEnabled
 
-        pinBtn.isVisible = sharedPreferences.getBoolean("enable_qs_pin$orientationValue", true)
-
-        val volumeEnabled = sharedPreferences.getBoolean("enable_qs_vol$orientationValue", true)
-        volumeBtn.isVisible = volumeEnabled
-
-        dateTv.isVisible = sharedPreferences.getBoolean("enable_qs_date$orientationValue", true)
-
-        val statusEnabled = bluetoothEnabled || batteryEnabled || volumeEnabled
+        val statusEnabled = bluetoothEnabled || batteryEnabled
         statusArea.isVisible = statusEnabled
         statusArea.setPadding(if (statusEnabled) Utils.dpToPx(context, 4) else 0)
     }
@@ -1810,7 +1813,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         ColorUtils.applySecondaryColor(context, sharedPreferences, homeBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, recentBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, assistBtn)
-        ColorUtils.applySecondaryColor(context, sharedPreferences, pinBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, powerBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, statusArea)
     }
@@ -1984,12 +1986,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         homeBtn = dock!!.findViewById(R.id.home_btn)
         recentBtn = dock!!.findViewById(R.id.recents_btn)
         assistBtn = dock!!.findViewById(R.id.assist_btn)
-        pinBtn = dock!!.findViewById(R.id.pin_btn)
         statusArea = dock!!.findViewById(R.id.status_area)
         bluetoothBtn = dock!!.findViewById(R.id.bluetooth_btn)
-        volumeBtn = dock!!.findViewById(R.id.volume_btn)
         batteryBtn = dock!!.findViewById(R.id.battery_btn)
-        dateTv = dock!!.findViewById(R.id.date_btn)
         dock!!.setOnHoverListener { _, event ->
             if (event.action == MotionEvent.ACTION_HOVER_ENTER) {
                 if (dockLayout.isGone) showDock()
@@ -2038,21 +2037,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             true
         }
 
-        pinBtn.setOnClickListener { togglePin() }
         statusArea.setOnClickListener(null)
-        dateTv.setOnClickListener {
-            launchApp(
-                null,
-                sharedPreferences.getString("app_clock", "com.android.deskclock")!!
-            )
-        }
-        dateTv.setOnLongClickListener {
-            launchApp(
-                null, null,
-                Intent(Settings.ACTION_DATE_SETTINGS)
-            )
-            true
-        }
 
         dockHeight =
             Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())

@@ -15,8 +15,6 @@ class DockLayoutDialog(context: Context, asOverlay: Boolean = false) {
             editor.putBoolean("enable_nav_back", which != 0)
             editor.putBoolean("enable_nav_home", which != 0)
             editor.putBoolean("enable_nav_recents", which != 0)
-            editor.putBoolean("enable_qs_vol", which != 0)
-            editor.putBoolean("enable_qs_date", which != 0)
             editor.putBoolean("app_menu_fullscreen", which != 2)
             editor.putString("launch_mode", if (which != 2) "fullscreen" else "standard")
             editor.putString(
@@ -24,14 +22,14 @@ class DockLayoutDialog(context: Context, asOverlay: Boolean = false) {
                     0 -> "4"
                     1 -> "10"
                     else -> "15"
-                }
+                },
             )
             editor.putString(
                 "max_running_apps_landscape", when (which) {
                     0 -> "8"
                     1 -> "10"
                     else -> "15"
-                }
+                },
             )
             editor.putString("dock_activation_area", if (which == 2) "5" else "25")
             editor.putInt("dock_layout", which)

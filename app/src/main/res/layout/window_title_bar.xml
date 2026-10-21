@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/window_title_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:background="@drawable/m3_expressive_card"
+    android:elevation="12dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingEnd="8dp">
+
+    <ImageView
+        android:id="@+id/wtb_icon_iv"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/wtb_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/google_sans_flex"
+        android:fontVariationSettings="'wght' 600, 'ROND' 75, 'opsz' 14"
+        android:singleLine="true"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:id="@+id/wtb_chevron_iv"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="12dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_expand_right" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1.0" />
+
+    <ImageView
+        android:id="@+id/wtb_minimize_btn"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="4dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/minimize"
+        android:padding="5dp"
+        android:src="@drawable/ic_hide" />
+
+    <ImageView
+        android:id="@+id/wtb_maximize_btn"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="4dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/maximize"
+        android:padding="5dp"
+        android:src="@drawable/ic_fullscreen" />
+
+    <ImageView
+        android:id="@+id/wtb_close_btn"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/window_close"
+        android:padding="5dp"
+        android:src="@drawable/ic_close" />
+
+</LinearLayout>

@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.Material3.Light">
-        <item name="fontFamily">sans-serif-medium</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontVariationSettings">\'wght\' 550, \'ROND\' 60, \'opsz\' 16, \'wdth\' 100</item>
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -40,8 +41,9 @@
     </style>
 
     <style name="AppTheme.Dock" parent="Theme.Material3.Dark">
-        <item name="fontFamily">sans-serif-medium</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontVariationSettings">\'wght\' 600, \'ROND\' 75, \'opsz\' 16, \'wdth\' 100</item>
         <item name="colorAccent">#FFFFFF</item>
         <item name="colorPrimary">@color/action</item>
         <item name="colorSecondaryContainer">#FFFFFF</item>
@@ -57,6 +59,9 @@
     </style>
 
     <style name="AppTheme.Launcher" parent="AppTheme">
+        <item name="fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontVariationSettings">\'wght\' 600, \'ROND\' 70, \'opsz\' 16, \'wdth\' 100</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -68,6 +73,9 @@
     </style>
 
     <style name="DialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontFamily">@font/google_sans_flex</item>
+        <item name="android:fontVariationSettings">\'wght\' 650, \'ROND\' 85, \'opsz\' 20, \'wdth\' 100</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="cornerFamily">rounded</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
