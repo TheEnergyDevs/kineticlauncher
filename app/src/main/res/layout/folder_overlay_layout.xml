@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/folder_container_card"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/m3_expressive_card"
+    android:elevation="16dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/folder_apps_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp" />
+
+    <EditText
+        android:id="@+id/folder_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:background="@null"
+        android:fontFamily="@font/google_sans_flex"
+        android:fontVariationSettings="'wght' 650, 'ROND' 80, 'opsz' 18"
+        android:gravity="center"
+        android:hint="@string/folder_name_hint"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="yes"
+        android:inputType="text"
+        android:singleLine="true"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#888888"
+        android:textSize="18sp" />
+
+</LinearLayout>

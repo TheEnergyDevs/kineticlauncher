@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
+            android:fontFamily="@font/google_sans_flex"
+            android:fontVariationSettings="'wght' 600, 'ROND' 70, 'opsz' 16"
             android:textColor="#FFFFFFFF"
             android:textSize="16sp" />
 

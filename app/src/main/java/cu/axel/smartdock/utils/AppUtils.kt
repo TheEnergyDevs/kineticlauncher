@@ -111,6 +111,18 @@ object AppUtils {
         return apps
     }
 
+    fun getAppByPackageName(context: Context, packageName: String): App? {
+        return try {
+            val pm = context.packageManager
+            val info = pm.getApplicationInfo(packageName, 0)
+            val label = info.loadLabel(pm).toString()
+            val icon = pm.getApplicationIcon(packageName)
+            App(label, packageName, icon)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     fun pinApp(context: Context, app: App, type: String) {
         val userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
         val file = File(context.filesDir, type)

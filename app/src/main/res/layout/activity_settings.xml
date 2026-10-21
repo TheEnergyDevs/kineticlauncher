@@ -1,8 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:fitsSystemWindows="true"
-	android:id="@+id/settings_container"
-	android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/settings_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:id="@+id/settings_back_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/circle"
+            android:padding="6dp"
+            android:src="@drawable/ic_back"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/settings_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_flex"
+            android:fontVariationSettings="'wght' 700, 'ROND' 100, 'opsz' 24"
+            android:text="KineticLauncher"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/settings_hub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
+
+                <!-- Fonts Card -->
+                <LinearLayout
+                    android:id="@+id/card_fonts"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fonts" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Change the font used globally across KineticLauncher." />
+                </LinearLayout>
+
+                <!-- Icons Card -->
+                <LinearLayout
+                    android:id="@+id/card_icons"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Icons" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Use icon packs, change icon shapes." />
+                </LinearLayout>
+
+                <!-- Global Search Card -->
+                <LinearLayout
+                    android:id="@+id/card_search"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Global search" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Change search engine, where we can search for you, suggestions, etc." />
+                </LinearLayout>
+
+                <!-- App grids and widgets Card -->
+                <LinearLayout
+                    android:id="@+id/card_grid_widgets"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="App grids and widgets" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Change what grid is used to space out apps, folders and widgets pinned on the desktop, and adjust widget placement options." />
+                </LinearLayout>
+
+                <!-- Check for updates Card -->
+                <LinearLayout
+                    android:id="@+id/card_updates"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Check for updates" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Check for updates to KineticLauncher and update the app for better features and bug fixes." />
+                </LinearLayout>
+
+                <!-- Advanced options Card -->
+                <LinearLayout
+                    android:id="@+id/card_advanced"
+                    style="@style/SettingsCardStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsCardTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced options" />
+                    <TextView
+                        style="@style/SettingsCardSubTitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced settings, tweaks and more fun goodies we won't let you have out of the box." />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -298,6 +298,30 @@
     <string name="lets_start">Let\'s start</string>
     <string name="change_wallpaper">Change wallpaper</string>
     <string name="display_settings">Display settings</string>
+    <string name="wallpaper_and_style" translatable="false">Wallpaper and style</string>
+    <string name="create_folder" translatable="false">Create folder</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="edit_home_screen" translatable="false">Edit home screen</string>
+    <string name="folder_name" translatable="false">Folder name</string>
+    <string name="minimize" translatable="false">Minimize</string>
+    <string name="maximize" translatable="false">Maximize</string>
+    <string name="window_close" translatable="false">Close</string>
+    <string name="wallpapers" translatable="false">Wallpapers</string>
+    <string name="widgets" translatable="false">Widgets</string>
+    <string name="home_settings" translatable="false">Home settings</string>
+    <string name="folder_name_hint" translatable="false">Folder Name</string>
+    <string name="settings_fonts_title" translatable="false">Fonts</string>
+    <string name="settings_fonts_sub" translatable="false">Change the font used globally across KineticLauncher.</string>
+    <string name="settings_icons_title" translatable="false">Icons</string>
+    <string name="settings_icons_sub" translatable="false">Use icon packs, change icon shapes.</string>
+    <string name="settings_search_title" translatable="false">Global search</string>
+    <string name="settings_search_sub" translatable="false">Change search engine, where we can search for you, suggestions, etc.</string>
+    <string name="settings_grid_title" translatable="false">App grids and widgets</string>
+    <string name="settings_grid_sub" translatable="false">Change what grid is used to space out apps, folders and widgets pinned on the desktop, and adjust widget placement options.</string>
+    <string name="settings_updates_title" translatable="false">Check for updates</string>
+    <string name="settings_updates_sub" translatable="false">Check for updates to KineticLauncher and update the app for better features and bug fixes.</string>
+    <string name="settings_advanced_title" translatable="false">Advanced options</string>
+    <string name="settings_advanced_sub" translatable="false">Advanced settings, tweaks and more fun goodies we won\'t let you have out of the box.</string>
 
     <!-- Toasts -->
     <string name="start_message">KineticLauncher started</string>
