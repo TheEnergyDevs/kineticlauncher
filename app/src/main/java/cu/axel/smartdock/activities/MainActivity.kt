@@ -111,8 +111,22 @@ class MainActivity : AppCompatActivity() {
         }
         if (!DeviceUtils.canDrawOverOtherApps(this) || !DeviceUtils.isAccessibilityServiceEnabled(this))
             showPermissionsDialog()
-        if (sharedPreferences.getInt("dock_layout", -1) == -1)
-            DockLayoutDialog(this)
+        if (sharedPreferences.getInt("dock_layout", -1) == -1) {
+            sharedPreferences.edit()
+                .putBoolean("enable_nav_back", false)
+                .putBoolean("enable_nav_home", false)
+                .putBoolean("enable_nav_recents", false)
+                .putBoolean("app_menu_fullscreen", false)
+                .putString("launch_mode", "standard")
+                .putString("max_running_apps", "15")
+                .putString("max_running_apps_landscape", "15")
+                .putString("dock_activation_area", "5")
+                .putInt("dock_layout", 2)
+                .putString("activation_method", "swipe")
+                .putBoolean("show_notifications", true)
+                .putBoolean("enable_qs_pin", false)
+                .apply()
+        }
 
         Shizuku.addBinderReceivedListener {
             if (Shizuku.pingBinder()) {

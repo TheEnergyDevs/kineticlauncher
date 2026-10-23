@@ -52,7 +52,8 @@ class DockAppAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val app = apps[position]
         val size = app.tasks.size
-        if (size > 0) {
+        val isRunning = size > 0 && app.tasks[0].id != -1
+        if (isRunning) {
             if (tintIndicators)
                 ColorUtils.applyColor(
                     viewHolder.runningIndicator,
@@ -60,7 +61,7 @@ class DockAppAdapter(
                 )
 
             val isForeground = app.packageName == AppUtils.currentApp
-            viewHolder.runningIndicator.alpha = if (app.tasks[0].id != -1) 1f else 0f
+            viewHolder.runningIndicator.alpha = 1f
             viewHolder.runningIndicator.layoutParams.width =
                 Utils.dpToPx(context, if (isForeground) 16 else 6)
             viewHolder.runningIndicator.layoutParams.height =

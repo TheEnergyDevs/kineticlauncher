@@ -398,6 +398,18 @@ object AppUtils {
         )
     }
 
+    fun handleWindowSnap(context: Context, taskId: Int, dropX: Float, dockHeight: Int, displayId: Int = Display.DEFAULT_DISPLAY) {
+        if (taskId < 0) return
+        val bounds = DeviceUtils.getDisplayBounds(context, displayId)
+        val screenWidth = bounds.width()
+        val edgeThreshold = Utils.dpToPx(context, 40)
+        if (dropX <= edgeThreshold) {
+            resizeTask(context, "tiled-left", taskId, dockHeight)
+        } else if (dropX >= screenWidth - edgeThreshold) {
+            resizeTask(context, "tiled-right", taskId, dockHeight)
+        }
+    }
+
     fun containsTask(apps: ArrayList<DockApp>, task: AppTask): Int {
         for (i in apps.indices) {
             if (apps[i].packageName == task.packageName) return i

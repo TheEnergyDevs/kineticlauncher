@@ -974,7 +974,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         } else {
             val width = Utils.dpToPx(
                 context,
-                sharedPreferences.getString("app_menu_width", "650")!!.toInt()
+                sharedPreferences.getString("app_menu_width", "420")!!.toInt()
             )
             val height = Utils.dpToPx(
                 context,
@@ -988,11 +988,11 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             layoutParams.y = margins + dockHeight
             appsGv.layoutManager = GridLayoutManager(
                 context,
-                sharedPreferences.getString("num_columns", "5")!!.toInt()
+                sharedPreferences.getString("num_columns", "4")!!.toInt()
             )
             favoritesGv.layoutManager = GridLayoutManager(
                 context,
-                sharedPreferences.getString("num_columns", "5")!!.toInt()
+                sharedPreferences.getString("num_columns", "4")!!.toInt()
             )
             val padding = Utils.dpToPx(context, 10)
             appMenu!!.setPadding(padding, padding, padding, padding)
@@ -1915,6 +1915,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
         gestureDetector.onTouchEvent(motionEvent)
+        if (motionEvent.action == MotionEvent.ACTION_UP && tasks.isNotEmpty()) {
+            val task = tasks[0]
+            AppUtils.handleWindowSnap(context, task.id, motionEvent.rawX, dockHeight)
+        }
         return false
     }
 

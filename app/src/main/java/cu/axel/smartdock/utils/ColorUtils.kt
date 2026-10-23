@@ -108,8 +108,9 @@ object ColorUtils {
         val colors = IntArray(5)
         when (theme) {
             "dark" -> {
-                mainColor = "#212121".toColorInt()
+                mainColor = "#1E1E22".toColorInt()
                 secondaryColor = manipulateColor(mainColor, 1.35f)
+                alpha = 235
             }
 
             "black" -> {
