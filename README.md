@@ -4,8 +4,7 @@
 
 A desktop-oriented launcher for Android/EnergyOS.
 ## Installation
-We haven't posted the first release apk yet, since we haven't finished building, but above is a screenshot of a recent version.
-
+The first release apk has been posted, simply install it, then give us the required permissions, and you're good to go!
 ## Requirements
 You need a device running Android 10 and up, and no root is required, but to access full features make it a system app, or you have to root it.
 
